@@ -1,0 +1,64 @@
+cd html/webAppDev/assignment/test2/prod
+ln -s ~/html/webAppDev/assignment/test2/prod/storage/app/public/product_images public/product_images
+
+
+php artisan make:migration create_dishes_table
+php artisan make:migration create_photos_table
+php artisan make:migration create_orders_table
+php artisan make:migration create_favs_table
+php artisan make:migration create_carts_table
+
+
+php artisan migrate
+
+php artisan route:list
+
+php artisan make:seeder DishesTableSeeder
+php artisan make:seeder PhotosTableSeeder
+php artisan make:seeder OrdersTableSeeder
+php artisan make:seeder FavsTableSeeder
+php artisan make:seeder CartsTableSeeder
+
+php artisan db:seed
+
+php artisan db:seed –class=DishesTableSeeder
+
+php artisan migrate:refresh --seed
+
+php artisan make:model Dish
+
+php artisan route:list
+
+php artisan make:controller OrderController --resource
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>@yield('title')</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="{{asset('css/wp.css')}}">
+</head>
+<body>
+<a href="https://s5267134.elf.ict.griffith.edu.au/webAppDev/assignment/test2/prod/public/home"> Home </a> <br>
+<a href="https://s5267134.elf.ict.griffith.edu.au/webAppDev/assignment/test2/prod/public/redirects"> Dashboard </a> <br>
+<a href="https://s5267134.elf.ict.griffith.edu.au/webAppDev/assignment/test2/prod/public/top_list"> Top 5 </a> <br>
+
+
+
+  @auth 
+  <!--- user is logged in ---> 
+    Hello: {{Auth::user()->user_name}} User ID: {{Auth::user()->id}} User type: {{Auth::user()->type}} 
+    <form method="POST" action= "{{url('/logout')}}">
+      {{csrf_field()}}
+      <input type="submit" value="Logout"> 
+    </form>
+    @else 
+      <a href="{{route('login')}}">Log in </a> <br>
+      <a href="{{route('register')}}">Register </a>
+    <!--- user is not logged in --->
+  @endauth
+
+  @yield('content')
+</body>
+</html>
